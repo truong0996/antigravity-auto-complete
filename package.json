@@ -1,0 +1,48 @@
+{
+  "name": "antigravity-auto-accept-custom",
+  "displayName": "Antigravity Auto Accept (Custom)",
+  "description": "Automatically accepts Antigravity agent steps.",
+  "version": "0.0.1",
+  "publisher": "truongle",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "antigravity-auto-accept.toggle",
+        "title": "Toggle Auto-Accept"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "antigravity-auto-accept.toggle",
+        "key": "ctrl+alt+shift+u",
+        "mac": "cmd+alt+shift+u"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.90.0",
+    "@types/node": "20.x",
+    "@typescript-eslint/eslint-plugin": "^7.14.1",
+    "@typescript-eslint/parser": "^7.14.1",
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.5"
+  }
+}
