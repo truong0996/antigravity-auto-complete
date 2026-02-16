@@ -27,7 +27,34 @@
         "key": "ctrl+alt+shift+u",
         "mac": "cmd+alt+shift+u"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Antigravity Auto Accept",
+      "properties": {
+        "antigravity-auto-accept.interval": {
+          "type": "number",
+          "default": 1000,
+          "description": "Interval in milliseconds to check for auto-accept commands."
+        },
+        "antigravity-auto-accept.commands": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "antigravity.agent.acceptAgentStep",
+            "chatEditing.acceptAllFiles",
+            "chatEditing.acceptFile"
+          ],
+          "description": "List of command IDs to attempt to execute automatically."
+        },
+        "antigravity-auto-accept.showNotifications": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show notification messages when commands are executed or state changes."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
