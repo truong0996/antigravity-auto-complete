@@ -2,7 +2,7 @@
   "name": "antigravity-auto-accept-custom",
   "displayName": "Antigravity Auto Accept (Custom)",
   "description": "Automatically accepts Antigravity agent steps.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "truongle",
   "engines": {
     "vscode": "^1.90.0"
@@ -34,24 +34,12 @@
         "antigravity-auto-accept.interval": {
           "type": "number",
           "default": 1000,
-          "description": "Interval in milliseconds to check for auto-accept commands."
-        },
-        "antigravity-auto-accept.commands": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "default": [
-            "antigravity.agent.acceptAgentStep",
-            "chatEditing.acceptAllFiles",
-            "chatEditing.acceptFile"
-          ],
-          "description": "List of command IDs to attempt to execute automatically."
+          "description": "Interval in milliseconds to scan for buttons to click."
         },
         "antigravity-auto-accept.showNotifications": {
           "type": "boolean",
           "default": false,
-          "description": "Show notification messages when commands are executed or state changes."
+          "description": "Show notification messages when state changes."
         }
       }
     }
@@ -65,11 +53,15 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.90.0",
     "@types/node": "20.x",
+    "@types/vscode": "^1.90.0",
+    "@types/ws": "^8.18.1",
     "@typescript-eslint/eslint-plugin": "^7.14.1",
     "@typescript-eslint/parser": "^7.14.1",
     "eslint": "^8.57.0",
     "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "ws": "^8.19.0"
   }
 }

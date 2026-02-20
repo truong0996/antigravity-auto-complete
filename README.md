@@ -1,40 +1,81 @@
 # Antigravity Auto Accept (Custom)
 
-A VS Code extension for Antigravity IDE that automatically accepts agent steps (terminal commands, file writes, and code edits) for hands-free automation.
+Automatically accepts Antigravity agent steps — file edits, terminal run commands, and confirmations — without requiring manual clicks.
 
-## Features
-- **Status Bar Toggle**: Easily enable or disable auto-acceptance from the status bar.
-- **Visual Feedback**: 
-  - `$(check) Auto-Accept: ON` (Green)
-  - `$(x) Auto-Accept: OFF` (Red)
-- **Keyboard Shortcut**: Toggle with `Ctrl+Alt+Shift+U`.
-- **Intelligent Acceptance**: Automatically triggers `antigravity.agent.acceptAgentStep` and `chatEditing.acceptAllFiles`.
+## How It Works
 
-## Local Build and Installation
+This extension connects to Antigravity's built-in remote debugger via the [Chrome DevTools Protocol (CDP)](https://chromedevtools.github.io/devtools-protocol/) on port **9000**. It traverses all browser frames (including cross-origin iframes where the agent UI lives), finds **Run / Accept / Accept All** buttons by their visible text, and clicks them automatically.
 
-To build and install the extension locally, follow these steps:
+> **Why CDP instead of VS Code commands?**
+> The "Run command?" dialog is rendered inside a cross-origin `vscode-webview://` iframe. VS Code's command API cannot reach it — only CDP DOM access can.
 
-1. **Install Dependencies**:
-   ```bash
-   npm install
-   ```
+## ⚡ Performance
 
-2. **Compile and Package**:
-   ```bash
-   npm run compile
-   npx @vscode/vsce package --no-git-tag-version --allow-missing-repository --allow-star-activation
-   ```
+| Feature | Detail |
+|---|---|
+| Startup delay | 2-second warmup before first scan |
+| Fast polling | 500ms when agent is active |
+| Idle polling | 2000ms after 10s of no clicks |
+| Connection | WebSocket connections are cached and reused |
 
-3. **Install to Antigravity IDE**:
-   ```bash
-   antigravity --install-extension antigravity-auto-accept-custom-0.0.1.vsix
-   ```
+## 🔒 Security
 
-4. **Reload Window**:
-   Open the Command Palette (`Ctrl+Shift+P`) and run `Developer: Reload Window`, or restart the IDE.
+- The scan script reads **only button text** to find click targets
+- **No editor content, chat messages, tokens, or credentials are ever read**
+- The CDP connection is strictly **localhost (127.0.0.1)** — not exposed to any network
 
-## Development
-- `F5` to start debugging in an Extension Development Host.
+## Setup (One-Time)
 
-## License
-MIT
+### Step 1: Enable the CDP Debug Port
+
+Open `C:\Users\<YourUser>\.antigravity\argv.json` (create if it doesn't exist) and add:
+
+```jsonc
+{
+    "enable-crash-reporter": true,
+    "crash-reporter-id": "your-existing-id",
+
+    // Required for auto-accept CDP connection
+    "remote-debugging-port": "9000"
+}
+```
+
+> **Note:** You must **fully restart Antigravity** (not just reload window) after editing this file.
+
+### Step 2: Install the Extension
+
+```bash
+antigravity --install-extension antigravity-auto-accept-custom-0.0.1.vsix
+```
+
+### Step 3: Reload Window
+
+Press `Ctrl+Shift+P` → `Developer: Reload Window`
+
+The status bar will show **✅ Auto-Accept: ON**.
+
+## Toggle
+
+- **Keyboard**: `Ctrl+Alt+Shift+U` (Mac: `Cmd+Alt+Shift+U`)
+- **Status Bar**: Click the status bar item
+
+## Output Channel
+
+Open **"Antigravity Auto Accept"** in the Output panel to see real-time logs:
+```
+[2026-02-20T09:19:36Z] Clicked: run on "My Project - Antigravity"
+```
+
+## Local Build
+
+```bash
+npm install
+npm run compile
+npx @vscode/vsce package --allow-missing-repository --allow-star-activation
+antigravity --install-extension antigravity-auto-accept-custom-0.0.1.vsix
+```
+
+## Requirements
+
+- Antigravity IDE with `remote-debugging-port: "9000"` in `argv.json`
+- The extension uses the [`ws`](https://github.com/websockets/ws) WebSocket library (bundled)
