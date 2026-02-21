@@ -3,7 +3,7 @@
   "displayName": "Antigravity Auto Accept (Custom)",
   "description": "Automatically accepts Antigravity agent steps.",
   "version": "0.0.2",
-  "publisher": "truongle",
+  "publisher": "truong0996",
   "engines": {
     "vscode": "^1.90.0"
   },
